@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="cases"><xs:complexType><xs:sequence>
+    <xs:element name="case" maxOccurs="unbounded"><xs:complexType>
+      <xs:sequence>
+        <xs:element name="title" type="xs:string"/>
+        <xs:element name="tagline" type="xs:string"/>
+        <xs:element name="story" type="xs:string"/>
+        <xs:element name="suspects"><xs:complexType><xs:sequence>
+          <xs:element name="suspect" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+            <xs:element name="name" type="xs:string"/><xs:element name="role" type="xs:string"/>
+            <xs:element name="profile" type="xs:string"/><xs:element name="motive" type="xs:string"/>
+          </xs:sequence><xs:attribute name="id" type="xs:ID" use="required"/></xs:complexType></xs:element>
+        </xs:sequence></xs:complexType></xs:element>
+        <xs:element name="locations"><xs:complexType><xs:sequence>
+          <xs:element name="location" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+            <xs:element name="name" type="xs:string"/><xs:element name="desc" type="xs:string"/>
+          </xs:sequence><xs:attribute name="id" type="xs:string" use="required"/></xs:complexType></xs:element>
+        </xs:sequence></xs:complexType></xs:element>
+        <xs:element name="motives"><xs:complexType><xs:sequence>
+          <xs:element name="motive" maxOccurs="unbounded"><xs:complexType><xs:simpleContent><xs:extension base="xs:string"><xs:attribute name="id" type="xs:string" use="required"/></xs:extension></xs:simpleContent></xs:complexType></xs:element>
+        </xs:sequence></xs:complexType></xs:element>
+        <xs:element name="clues"><xs:complexType><xs:sequence>
+          <xs:element name="clue" maxOccurs="unbounded"><xs:complexType><xs:sequence>
+            <xs:element name="title" type="xs:string"/><xs:element name="text" type="xs:string"/>
+          </xs:sequence><xs:attribute name="id" type="xs:string" use="required"/>
+          <xs:attribute name="location" type="xs:string"/><xs:attribute name="puzzle" type="xs:string"/></xs:complexType></xs:element>
+        </xs:sequence></xs:complexType></xs:element>
+        <xs:element name="solution"><xs:complexType><xs:sequence>
+          <xs:element name="explanation" type="xs:string"/>
+          <xs:element name="evidence" maxOccurs="unbounded"><xs:complexType><xs:attribute name="ref" type="xs:string" use="required"/></xs:complexType></xs:element>
+        </xs:sequence><xs:attribute name="culprit" type="xs:string" use="required"/><xs:attribute name="motive" type="xs:string" use="required"/></xs:complexType></xs:element>
+      </xs:sequence>
+      <xs:attribute name="id" type="xs:string" use="required"/>
+      <xs:attribute name="difficulty" use="required"><xs:simpleType><xs:restriction base="xs:string"><xs:enumeration value="easy"/><xs:enumeration value="medium"/><xs:enumeration value="hard"/></xs:restriction></xs:simpleType></xs:attribute>
+    </xs:complexType></xs:element>
+  </xs:sequence></xs:complexType></xs:element>
+</xs:schema>

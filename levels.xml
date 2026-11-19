@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<levels>
+  <level id="easy" base="1000" hintPenalty="25" wrongPenalty="40"><name>Easy</name><blurb>Generous clues, light penalties. A good first case.</blurb></level>
+  <level id="medium" base="1500" hintPenalty="50" wrongPenalty="75"><name>Medium</name><blurb>Red herrings appear. Hints cost more.</blurb></level>
+  <level id="hard" base="2000" hintPenalty="100" wrongPenalty="150"><name>Hard</name><blurb>Every hint and every mistake counts against you.</blurb></level>
+</levels>

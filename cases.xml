@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cases>
+  <case id="c1" difficulty="easy">
+    <title>The Missing Professor</title>
+    <tagline>A light still burns in a laboratory that should be empty.</tagline>
+    <story>Professor Elias Verma has not been seen since Thursday night. His coat hangs in Lab 4, his tea is cold, and the research files for his cancer-drug formula are gone. The campus has three people who had access after hours. Find out who took the professor, and why.</story>
+    <suspects>
+      <suspect id="s1"><name>Dr. Meera Rao</name><role>Rival researcher</role><profile>Competed with Verma for the same grant for six years.</profile><motive>Jealousy over the grant</motive></suspect>
+      <suspect id="s2"><name>Karan Malhotra</name><role>Lab assistant</role><profile>Quiet, deep in debt, with keys to every lab.</profile><motive>Money</motive></suspect>
+      <suspect id="s3"><name>Dean Sharma</name><role>Dean of Sciences</role><profile>Had threatened to cut Verma's funding.</profile><motive>Budget pressure</motive></suspect>
+    </suspects>
+    <locations>
+      <location id="l1"><name>Laboratory 4</name><desc>Steel benches, a humming fridge and an open logbook.</desc></location>
+      <location id="l2"><name>Faculty Office</name><desc>Paper everywhere. The bin hasn't been emptied.</desc></location>
+      <location id="l3"><name>Security Desk</name><desc>Keycard readers log every door on campus.</desc></location>
+    </locations>
+    <motives>
+      <motive id="m1">Jealousy over the research grant</motive>
+      <motive id="m2">Selling the formula to a rival firm</motive>
+      <motive id="m3">Stopping the professor's funding scandal</motive>
+    </motives>
+    <clues>
+      <clue id="k1" location="l1"><title>Lab logbook</title><text>Verma's last entry is 9:40 PM: "K. asked for the formula files again. Refused."</text></clue>
+      <clue id="k2" location="l2"><title>Torn courier receipt</title><text>A receipt addressed to Helix Biotech, signed with the initials K.M.</text></clue>
+      <clue id="k3" location="l3"><title>Keycard log</title><text>Karan Malhotra's card opened Lab 4 at 11:52 PM, after the building was locked.</text></clue>
+      <clue id="k4" puzzle="p1"><title>Safe contents</title><text>A USB drive label: "Backup, copied by K." The files were duplicated before they vanished.</text></clue>
+      <clue id="k5" puzzle="p2"><title>Corridor CCTV</title><text>A lab-coated figure leaves at 11:58 PM carrying a black case. The hands are those of a young man.</text></clue>
+      <clue id="k6" puzzle="p3"><title>Deleted file history</title><text>The formula was emailed out from Karan's account at 11:55 PM.</text></clue>
+    </clues>
+    <solution culprit="s2" motive="m2">
+      <explanation>Karan owed money and tried to buy Verma's files for Helix Biotech. After Verma refused, Karan returned at 11:52 PM, copied the formula and emailed it at 11:55 PM. The courier receipt and the keycard log place him there, and the sent email proves intent.</explanation>
+      <evidence ref="k2"/><evidence ref="k3"/><evidence ref="k6"/>
+    </solution>
+  </case>
+  <case id="c2" difficulty="medium">
+    <title>Murder at Midnight</title>
+    <tagline>A storm, a locked manor and a dead man in his study.</tagline>
+    <story>Lord Ashcombe was found dead in the study of Blackwood Manor just after midnight. The storm has cut the roads, so the killer is still in the house. Three guests had reason to want him gone, and one of them is lying.</story>
+    <suspects>
+      <suspect id="s1"><name>Lady Vivian Ashcombe</name><role>Wife</role><profile>Estranged, but still named in the will.</profile><motive>Inheritance</motive></suspect>
+      <suspect id="s2"><name>Mr. Graves</name><role>Butler</role><profile>Thirty years of loyal service, and a locked drawer nobody has seen inside.</profile><motive>Dismissal</motive></suspect>
+      <suspect id="s3"><name>Dr. Pell</name><role>Family physician</role><profile>Attending Lord Ashcombe's heart condition for a decade.</profile><motive>Hidden wrongdoing</motive></suspect>
+    </suspects>
+    <locations>
+      <location id="l1"><name>The Study</name><desc>A toppled chair, a smashed glass and a mantel clock.</desc></location>
+      <location id="l2"><name>Dining Room</name><desc>The table is still set. One wine glass is untouched.</desc></location>
+      <location id="l3"><name>Guest Room</name><desc>Dr. Pell's room, his leather bag on the bed.</desc></location>
+    </locations>
+    <motives>
+      <motive id="m1">Inheriting the estate</motive>
+      <motive id="m2">Avoiding dismissal</motive>
+      <motive id="m3">Hiding falsified prescriptions</motive>
+    </motives>
+    <clues>
+      <clue id="k1" location="l1"><title>Stopped clock</title><text>The mantel clock stopped at 11:47 when it was knocked from the shelf.</text></clue>
+      <clue id="k2" location="l2"><title>Poisoned glass</title><text>Traces of digitalis, a heart drug that is deadly in overdose, in the wine glass.</text></clue>
+      <clue id="k3" location="l3"><title>Pell's bag</title><text>An empty digitalis vial is missing from the doctor's bag, with its label torn off.</text></clue>
+      <clue id="k4" puzzle="p6"><title>Study safe ledger</title><text>The ledger lists dozens of prescriptions signed by Dr. Pell for patients who do not exist. Ashcombe had circled them.</text></clue>
+      <clue id="k5" puzzle="p5"><title>Muddy footprints</title><text>Boot prints by the garden door match Dr. Pell's shoes, not the butler's.</text></clue>
+      <clue id="k7" puzzle="p4"><title>Garden-door footprints</title><text>Wet prints lead in from the garden door and stop at the study.</text></clue>
+    </clues>
+    <solution culprit="s3" motive="m3">
+      <explanation>Lord Ashcombe discovered Dr. Pell's fake prescriptions and circled them in the ledger. Pell poisoned the wine with digitalis from his own bag, then went out through the garden door to look as if he came from the guest wing. The glass, the missing vial and the ledger together show means, opportunity and motive.</explanation>
+      <evidence ref="k2"/><evidence ref="k3"/><evidence ref="k4"/>
+    </solution>
+  </case>
+</cases>

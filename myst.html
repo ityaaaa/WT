@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MYSTERIA – The Interactive Mystery Experience</title>
+<style>
+:root{--ink:#111214;--coal:#1b1c20;--card:#24252b;--paper:#e8dfc8;--gold:#b8985a;--wine:#7a1f2b;--mute:#8d8a80;--ok:#6f9a6a;--bad:#c0504d}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 50% -10%,#2a2b31,var(--ink) 60%);color:var(--paper);font-family:Georgia,'Times New Roman',serif;line-height:1.6;min-height:100vh}
+h1,h2,h3,h4,.typed,.logo,.stamp,button,.role{font-family:'Courier New',Courier,monospace}
+button{cursor:pointer;color:var(--paper);background:none;border:1px solid var(--gold);padding:.55rem 1rem;font-size:.95rem;transition:background .2s,color .2s}
+button:hover,button:focus-visible{background:var(--gold);color:var(--ink);outline:none}
+button:disabled{opacity:.4;cursor:default}
+input,select{background:var(--ink);color:var(--paper);border:1px solid var(--mute);padding:.5rem;font:inherit;max-width:100%}
+.top{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1.5rem;border-bottom:1px solid #333}
+.logo{color:var(--gold);letter-spacing:.35em;text-decoration:none;font-weight:bold}
+.top nav button{border:0;margin-left:.5rem}
+.view{display:block}.view[hidden]{display:none}
+.hero{min-height:72vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;background:linear-gradient(transparent,rgba(122,31,43,.18))}
+.hero h1{font-size:clamp(3rem,11vw,8rem);letter-spacing:.2em;margin:.2em 0;color:var(--paper);text-shadow:0 0 40px rgba(184,152,90,.35)}
+.typed{color:var(--gold);overflow:hidden;white-space:nowrap;max-width:100%;border-right:2px solid var(--gold);width:0;animation:type 4s steps(60) forwards,blink .8s step-end infinite}
+@keyframes type{to{width:62ch}}@keyframes blink{50%{border-color:transparent}}
+.sub{max-width:52ch;color:var(--mute);font-size:1.15rem}
+.cta{background:var(--wine);border-color:var(--wine);font-size:1.1rem;padding:.9rem 2.2rem;letter-spacing:.1em;margin-top:1rem}
+.cta:hover{background:var(--gold);border-color:var(--gold)}
+.band{max-width:1100px;margin:0 auto;padding:2.5rem 1.2rem}
+.band h2{color:var(--gold);border-bottom:1px solid #333;padding-bottom:.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem}
+.card,.pin,.puz,.clue{background:var(--card);border:1px solid #38393f;padding:1.1rem 1.2rem;position:relative}
+.card.click{cursor:pointer;transition:transform .2s,border-color .2s}.card.click:hover{transform:translateY(-3px);border-color:var(--gold)}
+.badge{font-family:'Courier New',monospace;font-size:.8rem;border:1px solid var(--gold);padding:.1rem .5rem;color:var(--gold)}
+.badge.medium{color:#d19a66;border-color:#d19a66}.badge.hard{color:var(--bad);border-color:var(--bad)}
+.steps{max-width:60ch;padding-left:1.4rem}.steps li{margin:.8rem 0}
+.filters{margin:1rem 0}.filters button{margin-right:.5rem}.filters .on{background:var(--gold);color:var(--ink)}
+.history p{border-left:3px solid var(--wine);padding-left:.8rem;margin:.4rem 0}
+#game{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;padding:1.2rem;max-width:1300px;margin:0 auto}
+#game[hidden]{display:none}
+.side{background:var(--coal);border:1px solid #333;padding:1rem;align-self:start;position:sticky;top:1rem}
+.side h2{color:var(--gold);font-size:1.1rem;margin-top:0}
+.small{font-size:.85rem;color:var(--mute);margin:.3rem 0}
+.meter{height:8px;background:#000;border:1px solid #333}.meter div{height:100%;width:0;background:linear-gradient(90deg,var(--wine),var(--gold));transition:width .6s}
+#tabs{display:flex;flex-direction:column;gap:.4rem;margin-top:1rem}
+#tabs button{text-align:left}#tabs .on{background:var(--gold);color:var(--ink)}
+.panel{background:var(--coal);border:1px solid #333;padding:1.5rem;min-height:60vh;animation:fade .35s}
+@keyframes fade{from{opacity:0}}
+.panel h2{margin-top:0;color:var(--gold)}
+.story{font-family:'Courier New',monospace;white-space:pre-wrap;line-height:1.8;background:var(--paper);color:#222;padding:1.4rem;box-shadow:4px 4px 0 var(--wine)}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1.2rem}
+.pin{background:var(--paper);color:#222;transform:rotate(-1deg)}.pin:nth-child(even){transform:rotate(1.2deg)}
+.pin::before{content:"";position:absolute;top:-6px;left:50%;width:12px;height:12px;border-radius:50%;background:var(--wine);box-shadow:0 2px 3px #0006}
+.pin .role{color:var(--wine);font-weight:bold;margin:0}.pin .motive{font-style:italic}
+.locs{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.clue{background:var(--paper);color:#222;margin:.8rem 0;border-left:5px solid var(--wine);animation:fade .5s}
+.clue h4{margin:0 0 .3rem}
+.puz{margin:1rem 0}.puz.done{border-color:var(--ok)}
+.fb{min-height:1.4em;font-family:'Courier New',monospace}.fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+.hint{color:var(--gold);font-style:italic}
+.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin:.5rem 0}
+.tl li{display:flex;gap:.5rem;align-items:center;margin:.3rem 0;list-style:none}
+.result{border:2px solid var(--gold);padding:1.2rem;margin-top:1rem;background:#0006}
+.result.win{border-color:var(--ok)}.result.lose{border-color:var(--bad)}
+footer{text-align:center;color:var(--mute);font-size:.8rem;padding:2rem}
+@media(max-width:800px){#game{grid-template-columns:1fr}.side{position:static}#tabs{flex-direction:row;flex-wrap:wrap}.typed{white-space:normal;border:0;width:auto;animation:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.typed{width:auto}}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <a href="#" class="logo" data-go="home">MYSTERIA</a>
+  <nav><button data-go="home">Home</button><button data-go="select">Cases</button></nav>
+</header>
+
+<main id="home" class="view">
+  <section class="hero">
+    <p class="typed">The rain hasn't stopped for three days. Neither have the questions.</p>
+    <h1>MYSTERIA</h1>
+    <p class="sub">Search the scene. Question the suspects. Name the culprit before the trail goes cold.</p>
+    <button class="cta" data-go="select">Start Investigating</button>
+  </section>
+  <section class="band"><h2>Featured cases</h2><div id="featured" class="grid"></div></section>
+  <section class="band"><h2>Difficulty levels</h2><div id="levels" class="grid"></div></section>
+  <section class="band"><h2>How the game works</h2>
+    <ol class="steps">
+      <li><b>Read the briefing.</b> Learn who is involved and what happened.</li>
+      <li><b>Search locations.</b> Each place may hold a clue for your notebook.</li>
+      <li><b>Solve puzzles.</b> Riddles, passwords, timelines and matches unlock evidence.</li>
+      <li><b>Accuse.</b> Pick the culprit, the motive and the evidence that proves it.</li>
+    </ol>
+  </section>
+</main>
+
+<main id="select" class="view" hidden>
+  <section class="band"><h2>Choose a case</h2>
+    <div id="filters" class="filters"></div>
+    <div id="cases" class="grid"></div>
+    <h2>Case history</h2><div id="history" class="history"></div>
+  </section>
+</main>
+
+<main id="game" class="view" hidden>
+  <aside class="side">
+    <h2 id="gTitle"></h2>
+    <div class="meter"><div id="bar"></div></div>
+    <p id="pct" class="small"></p>
+    <p class="small" id="scoreLine"></p>
+    <nav id="tabs"></nav>
+  </aside>
+  <section id="panel" class="panel"></section>
+</main>
+
+<footer><span id="xmlStatus">Loading XML…</span></footer>
+<script>window.XML_BUNDLE={"cases.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<cases>\n  <case id=\"c1\" difficulty=\"easy\">\n    <title>The Missing Professor<\/title>\n    <tagline>A light still burns in a laboratory that should be empty.<\/tagline>\n    <story>Professor Elias Verma has not been seen since Thursday night. His coat hangs in Lab 4, his tea is cold, and the research files for his cancer-drug formula are gone. The campus has three people who had access after hours. Find out who took the professor, and why.<\/story>\n    <suspects>\n      <suspect id=\"s1\"><name>Dr. Meera Rao<\/name><role>Rival researcher<\/role><profile>Competed with Verma for the same grant for six years.<\/profile><motive>Jealousy over the grant<\/motive><\/suspect>\n      <suspect id=\"s2\"><name>Karan Malhotra<\/name><role>Lab assistant<\/role><profile>Quiet, deep in debt, with keys to every lab.<\/profile><motive>Money<\/motive><\/suspect>\n      <suspect id=\"s3\"><name>Dean Sharma<\/name><role>Dean of Sciences<\/role><profile>Had threatened to cut Verma's funding.<\/profile><motive>Budget pressure<\/motive><\/suspect>\n    <\/suspects>\n    <locations>\n      <location id=\"l1\"><name>Laboratory 4<\/name><desc>Steel benches, a humming fridge and an open logbook.<\/desc><\/location>\n      <location id=\"l2\"><name>Faculty Office<\/name><desc>Paper everywhere. The bin hasn't been emptied.<\/desc><\/location>\n      <location id=\"l3\"><name>Security Desk<\/name><desc>Keycard readers log every door on campus.<\/desc><\/location>\n    <\/locations>\n    <motives>\n      <motive id=\"m1\">Jealousy over the research grant<\/motive>\n      <motive id=\"m2\">Selling the formula to a rival firm<\/motive>\n      <motive id=\"m3\">Stopping the professor's funding scandal<\/motive>\n    <\/motives>\n    <clues>\n      <clue id=\"k1\" location=\"l1\"><title>Lab logbook<\/title><text>Verma's last entry is 9:40 PM: \"K. asked for the formula files again. Refused.\"<\/text><\/clue>\n      <clue id=\"k2\" location=\"l2\"><title>Torn courier receipt<\/title><text>A receipt addressed to Helix Biotech, signed with the initials K.M.<\/text><\/clue>\n      <clue id=\"k3\" location=\"l3\"><title>Keycard log<\/title><text>Karan Malhotra's card opened Lab 4 at 11:52 PM, after the building was locked.<\/text><\/clue>\n      <clue id=\"k4\" puzzle=\"p1\"><title>Safe contents<\/title><text>A USB drive label: \"Backup, copied by K.\" The files were duplicated before they vanished.<\/text><\/clue>\n      <clue id=\"k5\" puzzle=\"p2\"><title>Corridor CCTV<\/title><text>A lab-coated figure leaves at 11:58 PM carrying a black case. The hands are those of a young man.<\/text><\/clue>\n      <clue id=\"k6\" puzzle=\"p3\"><title>Deleted file history<\/title><text>The formula was emailed out from Karan's account at 11:55 PM.<\/text><\/clue>\n    <\/clues>\n    <solution culprit=\"s2\" motive=\"m2\">\n      <explanation>Karan owed money and tried to buy Verma's files for Helix Biotech. After Verma refused, Karan returned at 11:52 PM, copied the formula and emailed it at 11:55 PM. The courier receipt and the keycard log place him there, and the sent email proves intent.<\/explanation>\n      <evidence ref=\"k2\"/><evidence ref=\"k3\"/><evidence ref=\"k6\"/>\n    <\/solution>\n  <\/case>\n  <case id=\"c2\" difficulty=\"medium\">\n    <title>Murder at Midnight<\/title>\n    <tagline>A storm, a locked manor and a dead man in his study.<\/tagline>\n    <story>Lord Ashcombe was found dead in the study of Blackwood Manor just after midnight. The storm has cut the roads, so the killer is still in the house. Three guests had reason to want him gone, and one of them is lying.<\/story>\n    <suspects>\n      <suspect id=\"s1\"><name>Lady Vivian Ashcombe<\/name><role>Wife<\/role><profile>Estranged, but still named in the will.<\/profile><motive>Inheritance<\/motive><\/suspect>\n      <suspect id=\"s2\"><name>Mr. Graves<\/name><role>Butler<\/role><profile>Thirty years of loyal service, and a locked drawer nobody has seen inside.<\/profile><motive>Dismissal<\/motive><\/suspect>\n      <suspect id=\"s3\"><name>Dr. Pell<\/name><role>Family physician<\/role><profile>Attending Lord Ashcombe's heart condition for a decade.<\/profile><motive>Hidden wrongdoing<\/motive><\/suspect>\n    <\/suspects>\n    <locations>\n      <location id=\"l1\"><name>The Study<\/name><desc>A toppled chair, a smashed glass and a mantel clock.<\/desc><\/location>\n      <location id=\"l2\"><name>Dining Room<\/name><desc>The table is still set. One wine glass is untouched.<\/desc><\/location>\n      <location id=\"l3\"><name>Guest Room<\/name><desc>Dr. Pell's room, his leather bag on the bed.<\/desc><\/location>\n    <\/locations>\n    <motives>\n      <motive id=\"m1\">Inheriting the estate<\/motive>\n      <motive id=\"m2\">Avoiding dismissal<\/motive>\n      <motive id=\"m3\">Hiding falsified prescriptions<\/motive>\n    <\/motives>\n    <clues>\n      <clue id=\"k1\" location=\"l1\"><title>Stopped clock<\/title><text>The mantel clock stopped at 11:47 when it was knocked from the shelf.<\/text><\/clue>\n      <clue id=\"k2\" location=\"l2\"><title>Poisoned glass<\/title><text>Traces of digitalis, a heart drug that is deadly in overdose, in the wine glass.<\/text><\/clue>\n      <clue id=\"k3\" location=\"l3\"><title>Pell's bag<\/title><text>An empty digitalis vial is missing from the doctor's bag, with its label torn off.<\/text><\/clue>\n      <clue id=\"k4\" puzzle=\"p6\"><title>Study safe ledger<\/title><text>The ledger lists dozens of prescriptions signed by Dr. Pell for patients who do not exist. Ashcombe had circled them.<\/text><\/clue>\n      <clue id=\"k5\" puzzle=\"p5\"><title>Muddy footprints<\/title><text>Boot prints by the garden door match Dr. Pell's shoes, not the butler's.<\/text><\/clue>\n      <clue id=\"k7\" puzzle=\"p4\"><title>Garden-door footprints<\/title><text>Wet prints lead in from the garden door and stop at the study.<\/text><\/clue>\n    <\/clues>\n    <solution culprit=\"s3\" motive=\"m3\">\n      <explanation>Lord Ashcombe discovered Dr. Pell's fake prescriptions and circled them in the ledger. Pell poisoned the wine with digitalis from his own bag, then went out through the garden door to look as if he came from the guest wing. The glass, the missing vial and the ledger together show means, opportunity and motive.<\/explanation>\n      <evidence ref=\"k2\"/><evidence ref=\"k3\"/><evidence ref=\"k4\"/>\n    <\/solution>\n  <\/case>\n<\/cases>\n", "puzzles.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<puzzles>\n  <puzzle id=\"p1\" case=\"c1\" type=\"password\" reward=\"k4\"><title>The Professor's Safe<\/title><question>A plaque above the safe reads \"Est. MCMXC\". Enter the four-digit year to open it.<\/question><answer>1990<\/answer><hint>Convert the Roman numerals: M=1000, CM=900, XC=90.<\/hint><success>The safe clicks open.<\/success><\/puzzle>\n  <puzzle id=\"p2\" case=\"c1\" type=\"timeline\" reward=\"k5\"><title>Rebuild the Night<\/title><question>Put Thursday night in order, earliest first.<\/question><event order=\"1\">Verma writes his final logbook entry<\/event><event order=\"2\">Building is locked for the night<\/event><event order=\"3\">Keycard opens Lab 4<\/event><event order=\"4\">Verma's car is found abandoned<\/event><hint>The keycard swipe happens after the lock-up.<\/hint><success>The footage lines up with that timeline.<\/success><\/puzzle>\n  <puzzle id=\"p3\" case=\"c1\" type=\"riddle\" reward=\"k6\"><title>The Locked Account<\/title><question>The login hint reads: \"I have keys but open no doors. I have space but no room.\" What am I?<\/question><answer>keyboard<\/answer><answer>a keyboard<\/answer><hint>You are typing on one.<\/hint><success>The account opens to its sent folder.<\/success><\/puzzle>\n  <puzzle id=\"p4\" case=\"c2\" type=\"riddle\" reward=\"k7\"><title>The Gardener's Riddle<\/title><question>A note on the garden door: \"The more you take, the more you leave behind.\" What is it?<\/question><answer>footsteps<\/answer><answer>footprints<\/answer><hint>Think of walking through mud.<\/hint><success>Wet prints lead from the garden door.<\/success><\/puzzle>\n  <puzzle id=\"p5\" case=\"c2\" type=\"match\" reward=\"k5\"><title>Match the Evidence<\/title><question>Match each item found in the house to its owner.<\/question><pair left=\"Muddy leather shoes\" right=\"Dr. Pell\"/><pair left=\"Lipstick on a glass\" right=\"Lady Vivian\"/><pair left=\"Silver polish rag\" right=\"Mr. Graves\"/><hint>Who was outdoors, who was at dinner, and who cleans?<\/hint><success>The boots match the garden-door prints.<\/success><\/puzzle>\n  <puzzle id=\"p6\" case=\"c2\" type=\"choice\" reward=\"k4\"><title>The Study Safe<\/title><question>The safe code is the time the clock stopped. Which code opens it?<\/question><option>0447<\/option><option correct=\"true\">1147<\/option><option>1247<\/option><hint>The clock stopped at 11:47. Which options are written as 24-hour times?<\/hint><success>The safe opens.<\/success><\/puzzle>\n<\/puzzles>\n", "levels.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<levels>\n  <level id=\"easy\" base=\"1000\" hintPenalty=\"25\" wrongPenalty=\"40\"><name>Easy<\/name><blurb>Generous clues, light penalties. A good first case.<\/blurb><\/level>\n  <level id=\"medium\" base=\"1500\" hintPenalty=\"50\" wrongPenalty=\"75\"><name>Medium<\/name><blurb>Red herrings appear. Hints cost more.<\/blurb><\/level>\n  <level id=\"hard\" base=\"2000\" hintPenalty=\"100\" wrongPenalty=\"150\"><name>Hard<\/name><blurb>Every hint and every mistake counts against you.<\/blurb><\/level>\n<\/levels>\n", "case.xsl": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">\n  <xsl:output method=\"html\"/>\n  <xsl:param name=\"view\" select=\"'suspects'\"/>\n  <xsl:template match=\"/case\">\n    <xsl:choose>\n      <xsl:when test=\"$view='suspects'\">\n        <div class=\"board\">\n          <xsl:for-each select=\"suspects/suspect\">\n            <article class=\"pin\"><h3><xsl:value-of select=\"name\"/><\/h3>\n              <p class=\"role\"><xsl:value-of select=\"role\"/><\/p>\n              <p><xsl:value-of select=\"profile\"/><\/p>\n              <p class=\"motive\">Possible motive: <xsl:value-of select=\"motive\"/><\/p>\n            <\/article>\n          <\/xsl:for-each>\n        <\/div>\n      <\/xsl:when>\n      <xsl:otherwise>\n        <xsl:variable name=\"c\" select=\"solution/@culprit\"/>\n        <xsl:variable name=\"m\" select=\"solution/@motive\"/>\n        <h3>The culprit: <xsl:value-of select=\"suspects/suspect[@id=$c]/name\"/><\/h3>\n        <p class=\"role\">Motive: <xsl:value-of select=\"motives/motive[@id=$m]\"/><\/p>\n        <p><xsl:value-of select=\"solution/explanation\"/><\/p>\n        <h4>Key evidence<\/h4>\n        <ul><xsl:for-each select=\"solution/evidence\">\n          <xsl:variable name=\"r\" select=\"@ref\"/>\n          <li><b><xsl:value-of select=\"../../clues/clue[@id=$r]/title\"/><\/b>: <xsl:value-of select=\"../../clues/clue[@id=$r]/text\"/><\/li>\n        <\/xsl:for-each><\/ul>\n      <\/xsl:otherwise>\n    <\/xsl:choose>\n  <\/xsl:template>\n<\/xsl:stylesheet>\n", "cases.xsd": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" elementFormDefault=\"qualified\">\n  <xs:element name=\"cases\"><xs:complexType><xs:sequence>\n    <xs:element name=\"case\" maxOccurs=\"unbounded\"><xs:complexType>\n      <xs:sequence>\n        <xs:element name=\"title\" type=\"xs:string\"/>\n        <xs:element name=\"tagline\" type=\"xs:string\"/>\n        <xs:element name=\"story\" type=\"xs:string\"/>\n        <xs:element name=\"suspects\"><xs:complexType><xs:sequence>\n          <xs:element name=\"suspect\" maxOccurs=\"unbounded\"><xs:complexType><xs:sequence>\n            <xs:element name=\"name\" type=\"xs:string\"/><xs:element name=\"role\" type=\"xs:string\"/>\n            <xs:element name=\"profile\" type=\"xs:string\"/><xs:element name=\"motive\" type=\"xs:string\"/>\n          <\/xs:sequence><xs:attribute name=\"id\" type=\"xs:ID\" use=\"required\"/><\/xs:complexType><\/xs:element>\n        <\/xs:sequence><\/xs:complexType><\/xs:element>\n        <xs:element name=\"locations\"><xs:complexType><xs:sequence>\n          <xs:element name=\"location\" maxOccurs=\"unbounded\"><xs:complexType><xs:sequence>\n            <xs:element name=\"name\" type=\"xs:string\"/><xs:element name=\"desc\" type=\"xs:string\"/>\n          <\/xs:sequence><xs:attribute name=\"id\" type=\"xs:string\" use=\"required\"/><\/xs:complexType><\/xs:element>\n        <\/xs:sequence><\/xs:complexType><\/xs:element>\n        <xs:element name=\"motives\"><xs:complexType><xs:sequence>\n          <xs:element name=\"motive\" maxOccurs=\"unbounded\"><xs:complexType><xs:simpleContent><xs:extension base=\"xs:string\"><xs:attribute name=\"id\" type=\"xs:string\" use=\"required\"/><\/xs:extension><\/xs:simpleContent><\/xs:complexType><\/xs:element>\n        <\/xs:sequence><\/xs:complexType><\/xs:element>\n        <xs:element name=\"clues\"><xs:complexType><xs:sequence>\n          <xs:element name=\"clue\" maxOccurs=\"unbounded\"><xs:complexType><xs:sequence>\n            <xs:element name=\"title\" type=\"xs:string\"/><xs:element name=\"text\" type=\"xs:string\"/>\n          <\/xs:sequence><xs:attribute name=\"id\" type=\"xs:string\" use=\"required\"/>\n          <xs:attribute name=\"location\" type=\"xs:string\"/><xs:attribute name=\"puzzle\" type=\"xs:string\"/><\/xs:complexType><\/xs:element>\n        <\/xs:sequence><\/xs:complexType><\/xs:element>\n        <xs:element name=\"solution\"><xs:complexType><xs:sequence>\n          <xs:element name=\"explanation\" type=\"xs:string\"/>\n          <xs:element name=\"evidence\" maxOccurs=\"unbounded\"><xs:complexType><xs:attribute name=\"ref\" type=\"xs:string\" use=\"required\"/><\/xs:complexType><\/xs:element>\n        <\/xs:sequence><xs:attribute name=\"culprit\" type=\"xs:string\" use=\"required\"/><xs:attribute name=\"motive\" type=\"xs:string\" use=\"required\"/><\/xs:complexType><\/xs:element>\n      <\/xs:sequence>\n      <xs:attribute name=\"id\" type=\"xs:string\" use=\"required\"/>\n      <xs:attribute name=\"difficulty\" use=\"required\"><xs:simpleType><xs:restriction base=\"xs:string\"><xs:enumeration value=\"easy\"/><xs:enumeration value=\"medium\"/><xs:enumeration value=\"hard\"/><\/xs:restriction><\/xs:simpleType><\/xs:attribute>\n    <\/xs:complexType><\/xs:element>\n  <\/xs:sequence><\/xs:complexType><\/xs:element>\n<\/xs:schema>\n", "progress.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<progress><player name=\"Detective\"/><\/progress>\n"};</script>
+<script>
+/* MYSTERIA – all game content comes from XML in /data.
+   DOM parsing: DOMParser. Querying: XPath (document.evaluate). Transform: XSLT (XSLTProcessor).
+   Validation: structural check driven by cases.xsd (browsers have no native XSD validator). */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle = a => [...a].sort(() => Math.random() - .5);
+
+/* XPath helpers */
+const xp = (ctx, expr) => {
+  const r = (ctx.ownerDocument || ctx).evaluate(expr, ctx, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null), a = [];
+  for (let i = 0; i < r.snapshotLength; i++) a.push(r.snapshotItem(i));
+  return a;
+};
+const tx = (ctx, expr) => (xp(ctx, expr)[0]?.textContent || '').trim();
+
+const D = {}; let G = null, filter = 'all';
+const fetchXML = async f => {
+  if (window.XML_BUNDLE && XML_BUNDLE[f]) return new DOMParser().parseFromString(XML_BUNDLE[f], 'application/xml');
+  const res = await fetch('data/' + f);
+  if (!res.ok) throw new Error(f + ' (' + res.status + ')');
+  return new DOMParser().parseFromString(await res.text(), 'application/xml');
+};
+const getCase = id => xp(D.cases, `//case[@id='${id}']`)[0];
+const getLevel = id => xp(D.lvl, `//level[@id='${id}']`)[0];
+
+/* XSD-driven validation: required child elements and attributes declared in the schema */
+function validate(doc, xsd) {
+  const XS = 'http://www.w3.org/2001/XMLSchema', rules = {}, errs = [];
+  for (const el of xsd.getElementsByTagNameNS(XS, 'element')) {
+    const ct = [...el.children].find(c => c.localName === 'complexType');
+    const seq = ct && [...ct.children].find(c => c.localName === 'sequence');
+    if (!seq) continue;
+    rules[el.getAttribute('name')] = {
+      kids: [...seq.children].filter(c => c.localName === 'element' && c.getAttribute('minOccurs') !== '0').map(c => c.getAttribute('name')),
+      attrs: [...ct.children].filter(c => c.localName === 'attribute' && c.getAttribute('use') === 'required').map(c => c.getAttribute('name'))
+    };
+  }
+  for (const n of doc.getElementsByTagName('*')) {
+    const r = rules[n.localName]; if (!r) continue;
+    r.kids.forEach(k => { if (![...n.children].some(c => c.localName === k)) errs.push(`<${n.localName}> missing <${k}>`); });
+    r.attrs.forEach(a => { if (!n.hasAttribute(a)) errs.push(`<${n.localName}> missing @${a}`); });
+  }
+  const bad = xp(doc, "//case[not(@difficulty='easy' or @difficulty='medium' or @difficulty='hard')]");
+  if (bad.length) errs.push('invalid difficulty value');
+  return errs;
+}
+
+/* XSLT: transform one <case> into HTML */
+function xslt(caseNode, view) {
+  const d = document.implementation.createDocument('', '', null);
+  d.appendChild(d.importNode(caseNode, true));
+  const p = new XSLTProcessor();
+  p.importStylesheet(D.xsl); p.setParameter(null, 'view', view);
+  return p.transformToFragment(d, document);
+}
+
+/* Player progress stored as XML (seeded from progress.xml, saved in localStorage) */
+function saveResult(caseId, score, win) {
+  const r = D.prog.createElement('result');
+  r.setAttribute('case', caseId); r.setAttribute('score', score); r.setAttribute('solved', win);
+  D.prog.documentElement.appendChild(r);
+  try { localStorage.setItem('mysteria_progress', new XMLSerializer().serializeToString(D.prog)); } catch (e) {}
+}
+
+async function init() {
+  try {
+    const f = ['cases.xml', 'puzzles.xml', 'levels.xml', 'case.xsl', 'cases.xsd', 'progress.xml'];
+    [D.cases, D.puz, D.lvl, D.xsl, D.xsd, D.prog] = await Promise.all(f.map(fetchXML));
+    try { const s = localStorage.getItem('mysteria_progress'); if (s) D.prog = new DOMParser().parseFromString(s, 'application/xml'); } catch (e) {}
+    const errs = validate(D.cases, D.xsd);
+    $('#xmlStatus').textContent = errs.length ? 'XSD check failed: ' + errs.join('; ') : 'cases.xml passed XSD check · content loaded from XML';
+    renderHome(); renderSelect();
+  } catch (e) {
+    $('#xmlStatus').textContent = 'Could not load XML: ' + e.message + '. Serve this folder over HTTP (python3 -m http.server) instead of opening the file directly.';
+  }
+}
+
+function go(v) {
+  document.querySelectorAll('.view').forEach(s => s.hidden = s.id !== v);
+  window.scrollTo(0, 0);
+  if (v === 'select') renderSelect();
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-go]'); if (b) { e.preventDefault(); go(b.dataset.go); } });
+
+const caseCard = c => {
+  const d = c.getAttribute('difficulty');
+  const el = document.createElement('article');
+  el.className = 'card click'; el.tabIndex = 0;
+  el.innerHTML = `<span class="badge ${d}">${d}</span><h3>${esc(tx(c, 'title'))}</h3><p>${esc(tx(c, 'tagline'))}</p><button>Open case file</button>`;
+  const open = () => startCase(c.getAttribute('id'));
+  el.onclick = open; el.onkeydown = e => { if (e.key === 'Enter') open(); };
+  return el;
+};
+
+function renderHome() {
+  $('#featured').replaceChildren(...xp(D.cases, '//case').map(caseCard));
+  $('#levels').replaceChildren(...xp(D.lvl, '//level').map(l => {
+    const el = document.createElement('div'); el.className = 'card click';
+    el.innerHTML = `<h3>${esc(tx(l, 'name'))}</h3><p>${esc(tx(l, 'blurb'))}</p><p class="small">Base score ${l.getAttribute('base')} · hint −${l.getAttribute('hintPenalty')} · mistake −${l.getAttribute('wrongPenalty')}</p>`;
+    el.onclick = () => { filter = l.getAttribute('id'); go('select'); };
+    return el;
+  }));
+}
+
+function renderSelect() {
+  const ids = ['all', ...xp(D.lvl, '//level/@id').map(a => a.value)];
+  $('#filters').replaceChildren(...ids.map(i => {
+    const b = document.createElement('button'); b.textContent = i; b.className = i === filter ? 'on' : '';
+    b.onclick = () => { filter = i; renderSelect(); }; return b;
+  }));
+  const list = xp(D.cases, filter === 'all' ? '//case' : `//case[@difficulty='${filter}']`);
+  if (list.length) $('#cases').replaceChildren(...list.map(caseCard));
+  else $('#cases').innerHTML = '<p>No cases at this difficulty yet. Choose another level.</p>';
+  const h = xp(D.prog, '//result');
+  $('#history').innerHTML = h.length ? h.map(r => `<p>${esc(tx(getCase(r.getAttribute('case')), 'title'))}: ${r.getAttribute('solved') === 'true' ? 'Solved' : 'Unsolved'}, score ${r.getAttribute('score')}</p>`).join('') : '<p class="small">No closed cases yet.</p>';
+}
+
+/* ---------- Investigation ---------- */
+const TABS = [['brief', 'Briefing'], ['suspects', 'Suspects'], ['scene', 'Scene'], ['puzzles', 'Puzzles'], ['notebook', 'Notebook'], ['accuse', 'Accuse']];
+
+function startCase(id) {
+  G = { id, c: getCase(id), found: new Set(), solved: new Set(), hints: 0, wrong: 0, notes: '', result: null, tab: 'brief' };
+  go('game'); $('#gTitle').textContent = tx(G.c, 'title');
+  $('#tabs').replaceChildren(...TABS.map(([k, n]) => {
+    const b = document.createElement('button'); b.textContent = n; b.dataset.k = k;
+    b.onclick = () => { G.tab = k; render(); }; return b;
+  }));
+  render();
+}
+
+function score() {
+  const l = getLevel(G.c.getAttribute('difficulty'));
+  return Math.max(0, +l.getAttribute('base') - G.hints * l.getAttribute('hintPenalty') - G.wrong * l.getAttribute('wrongPenalty') + G.solved.size * 50);
+}
+function side() {
+  const total = xp(G.c, 'clues/clue').length + xp(D.puz, `//puzzle[@case='${G.id}']`).length;
+  const pct = Math.round((G.found.size + G.solved.size) / total * 100);
+  $('#bar').style.width = pct + '%'; $('#pct').textContent = `Case progress: ${pct}%`;
+  $('#scoreLine').textContent = `Score ${score()} · Hints used ${G.hints} · Mistakes ${G.wrong}`;
+  document.querySelectorAll('#tabs button').forEach(b => b.className = b.dataset.k === G.tab ? 'on' : '');
+}
+const clueHTML = id => { const k = xp(G.c, `clues/clue[@id='${id}']`)[0]; return `<div class="clue"><h4>${esc(tx(k, 'title'))}</h4><p>${esc(tx(k, 'text'))}</p></div>`; };
+const hintCost = () => getLevel(G.c.getAttribute('difficulty')).getAttribute('hintPenalty');
+
+function render() {
+  const p = $('#panel'); p.style.animation = 'none'; p.offsetHeight; p.style.animation = '';
+  ({ brief, suspects, scene, puzzles, notebook, accuse })[G.tab](p); side();
+}
+
+function brief(p) {
+  p.innerHTML = `<h2>${esc(tx(G.c, 'title'))}</h2><div class="story">${esc(tx(G.c, 'story'))}</div>
+    <p class="small">Tip: search every location, then solve the puzzles to unlock deeper evidence.</p>
+    <button id="begin">Examine suspects</button>`;
+  $('#begin').onclick = () => { G.tab = 'suspects'; render(); };
+}
+
+function suspects(p) {
+  p.innerHTML = '<h2>Suspects</h2><div id="slot"></div>';
+  $('#slot').appendChild(xslt(G.c, 'suspects'));   // XSLT output
+}
+
+function scene(p) {
+  p.innerHTML = '<h2>Investigation scene</h2><div class="locs" id="locs"></div><div class="row"><button id="lead"></button></div><p class="hint" id="leadTxt"></p>';
+  $('#locs').replaceChildren(...xp(G.c, 'locations/location').map(l => {
+    const lid = l.getAttribute('id'), el = document.createElement('div'); el.className = 'card';
+    const clues = xp(G.c, `clues/clue[@location='${lid}']`);
+    const show = () => clues.map(k => clueHTML(k.getAttribute('id'))).join('') || '<p>Nothing here.</p>';
+    el.innerHTML = `<h3>${esc(tx(l, 'name'))}</h3><p>${esc(tx(l, 'desc'))}</p><button>Search</button><div class="res"></div>`;
+    const res = el.querySelector('.res');
+    if (clues.every(k => G.found.has(k.getAttribute('id')))) res.innerHTML = show();
+    el.querySelector('button').onclick = () => {
+      res.innerHTML = '<p class="small">Searching…</p>';
+      setTimeout(() => { clues.forEach(k => G.found.add(k.getAttribute('id'))); res.innerHTML = show(); side(); }, 600);
+    };
+    return el;
+  }));
+  $('#lead').textContent = `Ask for a lead (−${hintCost()})`;
+  $('#lead').onclick = () => {
+    const next = xp(G.c, 'locations/location').find(l => xp(G.c, `clues/clue[@location='${l.getAttribute('id')}']`).some(k => !G.found.has(k.getAttribute('id'))));
+    G.hints++; $('#leadTxt').textContent = next ? `Try searching: ${tx(next, 'name')}.` : 'Every location is searched. Solve the puzzles for the remaining clues.'; side();
+  };
+}
+
+function puzzles(p) {
+  p.innerHTML = '<h2>Puzzles</h2>';
+  xp(D.puz, `//puzzle[@case='${G.id}']`).forEach(q => p.appendChild(puzEl(q)));
+}
+
+function puzEl(q) {
+  const id = q.getAttribute('id'), type = q.getAttribute('type'), reward = q.getAttribute('reward');
+  const el = document.createElement('div'); el.className = 'puz' + (G.solved.has(id) ? ' done' : '');
+  let tl = [];
+  const draw = () => {
+    let body = '';
+    if (type === 'riddle' || type === 'password') body = '<input class="in" placeholder="Your answer">';
+    else if (type === 'choice') body = xp(q, 'option').map((o, i) => `<label><input type="radio" name="r${id}" value="${i}"> ${esc(o.textContent)}</label><br>`).join('');
+    else if (type === 'match') {
+      const opts = shuffle(xp(q, 'pair/@right').map(a => a.value));
+      body = xp(q, 'pair').map((pr, i) => `<div class="row"><span>${esc(pr.getAttribute('left'))}</span><select data-i="${i}"><option value="">Choose…</option>${opts.map(o => `<option>${esc(o)}</option>`).join('')}</select></div>`).join('');
+    } else if (type === 'timeline') {
+      if (!tl.length) tl = shuffle(xp(q, 'event').map(e => ({ o: +e.getAttribute('order'), t: e.textContent })));
+      body = '<ol class="tl">' + tl.map((e, i) => `<li>${esc(e.t)} <button data-m="${i},-1">▲</button><button data-m="${i},1">▼</button></li>`).join('') + '</ol>';
+    }
+    el.innerHTML = `<h3>${esc(tx(q, 'title'))}</h3><p>${esc(tx(q, 'question'))}</p>${body}
+      <div class="row"><button class="chk">Check answer</button><button class="hnt">Hint (−${hintCost()})</button></div>
+      <p class="hint"></p><p class="fb"></p>`;
+    el.querySelectorAll('[data-m]').forEach(b => b.onclick = () => {
+      const [i, d] = b.dataset.m.split(',').map(Number), j = i + d;
+      if (tl[j]) { [tl[i], tl[j]] = [tl[j], tl[i]]; draw(); }
+    });
+    const fb = el.querySelector('.fb');
+    el.querySelector('.hnt').onclick = () => { G.hints++; el.querySelector('.hint').textContent = 'Hint: ' + tx(q, 'hint'); side(); };
+    el.querySelector('.chk').onclick = () => {
+      let ok = false;
+      if (type === 'riddle' || type === 'password') { const v = el.querySelector('.in').value.trim().toLowerCase(); ok = xp(q, 'answer').some(a => a.textContent.trim().toLowerCase() === v); }
+      else if (type === 'choice') { const r = el.querySelector('input:checked'); ok = !!r && xp(q, 'option')[+r.value].getAttribute('correct') === 'true'; }
+      else if (type === 'match') { const pr = xp(q, 'pair'); ok = [...el.querySelectorAll('select')].every(s => s.value === pr[+s.dataset.i].getAttribute('right')); }
+      else ok = tl.every((e, i) => i === 0 || tl[i - 1].o < e.o);
+      if (ok) { G.solved.add(id); G.found.add(reward); done(); }
+      else { G.wrong++; fb.className = 'fb bad'; fb.textContent = 'Not right. Check your notebook and try again.'; side(); }
+    };
+  };
+  const done = () => {
+    el.className = 'puz done';
+    el.innerHTML = `<h3>${esc(tx(q, 'title'))}: solved</h3><p class="fb ok">${esc(tx(q, 'success'))}</p>${clueHTML(reward)}`; side();
+  };
+  G.solved.has(id) ? done() : draw();
+  return el;
+}
+
+function notebook(p) {
+  p.innerHTML = '<h2>Investigation notebook</h2><div id="nb"></div><h3>Your notes</h3><textarea id="notes" rows="5" style="width:100%;background:#111;color:inherit;border:1px solid #444;padding:.6rem"></textarea>';
+  $('#nb').innerHTML = G.found.size ? [...G.found].map(clueHTML).join('') : '<p>No clues yet. Search a location or solve a puzzle.</p>';
+  $('#notes').value = G.notes; $('#notes').oninput = e => G.notes = e.target.value;
+}
+
+function accuse(p) {
+  if (G.result) { p.innerHTML = G.result; $('#slot')?.appendChild(xslt(G.c, 'solution')); return; }
+  p.innerHTML = `<h2>Final accusation</h2>
+    <p>Who did it?</p><select id="cul">${xp(G.c, 'suspects/suspect').map(s => `<option value="${s.getAttribute('id')}">${esc(tx(s, 'name'))}</option>`).join('')}</select>
+    <p>Why?</p><select id="mot">${xp(G.c, 'motives/motive').map(m => `<option value="${m.getAttribute('id')}">${esc(m.textContent)}</option>`).join('')}</select>
+    <p>Which evidence proves it?</p><div id="ev"></div><br><button id="go" class="cta">Accuse</button>`;
+  $('#ev').innerHTML = G.found.size ? [...G.found].map(id => `<label><input type="checkbox" value="${id}"> ${esc(tx(G.c, `clues/clue[@id='${id}']/title`))}</label><br>`).join('') : '<p class="small">Collect clues first.</p>';
+  $('#go').onclick = () => {
+    const key = xp(G.c, 'solution/evidence/@ref').map(a => a.value), picked = [...document.querySelectorAll('#ev input:checked')].map(i => i.value);
+    const good = picked.filter(x => key.includes(x)).length, bad = picked.length - good;
+    const cOK = $('#cul').value === tx(G.c, 'solution/@culprit'), mOK = $('#mot').value === tx(G.c, 'solution/@motive');
+    const win = cOK && mOK && good >= 2;
+    const final = win ? score() + good * 100 - bad * 50 : Math.floor(score() / 4);
+    saveResult(G.id, Math.max(0, final), win);
+    G.result = `<h2>Case closed</h2><div class="result ${win ? 'win' : 'lose'}"><h3>${win ? 'Correct. You solved it.' : 'Not quite. The real story is below.'}</h3>
+      <p>Culprit: ${cOK ? 'correct' : 'wrong'} · Motive: ${mOK ? 'correct' : 'wrong'} · Key evidence: ${good} of ${key.length}${bad ? `, ${bad} irrelevant` : ''}</p>
+      <p><b>Final score: ${Math.max(0, final)}</b></p></div><div id="slot" class="result"></div>
+      <p><button data-go="select">Choose another case</button></p>`;
+    accuse(p);
+  };
+}
+
+init();
+
+</script>
+</body>
+</html>
